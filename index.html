@@ -1,0 +1,134 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CAT 2027 Planner</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="CAT 27">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#4338ca">
+<style>
+:root{--bg:#f4f5fb;--card:#fff;--tx:#1b1d2a;--mu:#6b7080;--pr:#4338ca;--ok:#16a34a;--bd:#e4e6f0;--Q:#2563eb;--D:#d97706;--V:#9333ea;--M:#dc2626;--R:#64748b}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1117;--card:#1a1d27;--tx:#eceef6;--mu:#9aa0b4;--pr:#818cf8;--bd:#2a2e3d}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.4 -apple-system,system-ui,sans-serif}
+main{padding:calc(env(safe-area-inset-top) + 14px) 14px calc(84px + env(safe-area-inset-bottom));max-width:640px;margin:auto}
+h1{font-size:22px;margin:0 0 12px}h2{font-size:13px;margin:0 0 8px;color:var(--mu);text-transform:uppercase;letter-spacing:.05em}
+.c{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;margin-bottom:12px}
+.big{font-size:46px;font-weight:700;line-height:1}.mu{color:var(--mu);font-size:13px}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:10px}.g .c{margin:0}
+.bar{height:8px;background:var(--bd);border-radius:9px;overflow:hidden;margin:6px 0}.bar i{display:block;height:100%;background:var(--pr)}
+.tk{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--bd)}.tk:first-of-type{border-top:0}
+.tk input{width:24px;height:24px;margin:2px 0 0;accent-color:var(--ok);flex:none}
+.tt{flex:1}.tt small{display:block;color:var(--mu)}.dn .tt b{text-decoration:line-through;opacity:.5}
+.dot{width:6px;align-self:stretch;border-radius:4px;flex:none}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--card);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;background:none;border:0;padding:8px 0 6px;font-size:11px;color:var(--mu)}nav button b{display:block;font-size:20px;font-weight:400}nav .on{color:var(--pr)}
+button.p{background:var(--pr);color:#fff;border:0;border-radius:10px;padding:10px 14px;font-size:15px}
+button.s{background:none;border:1px solid var(--bd);color:var(--tx);border-radius:10px;padding:10px 14px;font-size:15px}
+input,select,textarea{width:100%;font:inherit;padding:9px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);margin:4px 0}
+input[type=checkbox]{width:24px;padding:0}
+.r{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.r>*{flex:1}.dh{font-weight:600;margin:12px 0 2px}
+.od{border-color:#dc2626}
+</style></head><body><main id="v"></main>
+<nav id="n"></nav><input type="file" id="f" accept=".json,application/json" hidden>
+<script>
+const START='2026-11-25',KEY='cat27',DEF=()=>({done:{},tests:[],conf:{},exam:'2027-11-28'});
+const PH=[["Foundation building","2026-11-25","2027-02-28"],["Complete the syllabus","2027-03-01","2027-06-15"],["CAT-level practice and PYQs","2027-06-16","2027-08-31"],["Sectional tests and mocks","2027-09-01","2027-10-31"],["Final revision and strategy","2027-11-01","2027-11-27"]];
+const END=PH[4][2],NM={Q:'Quant',D:'DILR',V:'VARC',M:'Mock',R:'Review'};
+const T={Q:[["Basic calculations, fractions, decimals, BODMAS",1.2],["Percentages",1.2],["Ratio and proportion",1],["Averages",.8],["Profit, loss and discount",1],["Simple and compound interest",.8],["Mixtures and alligation",.8],["Time and work",1],["Time, speed and distance",1.2],["Number systems and divisibility",1.4],["Algebra",1.2],["Linear and quadratic equations",1],["Inequalities and functions",1],["Geometry",1.6],["Mensuration",1],["Modern maths: P and C, probability, sets",1.4]],
+D:[["Tables and data interpretation",1.2],["Bar graphs, line graphs and pie charts",1],["Caselets",1],["Linear and circular arrangements",1],["Grouping and distribution",1],["Selection and scheduling",1],["Games and tournaments",1],["Routes and networks",.8],["Venn diagrams",.8],["Binary logic",.8],["Quantitative reasoning sets",1],["Mixed CAT-level sets",1.2]],
+V:[["RC fundamentals",1.3],["Main idea and central argument",1],["Inference-based questions",1],["Author's tone and purpose",.8],["Paragraph structure and passage analysis",.8],["Strengthening comprehension and elimination",1],["Para summaries",.8],["Para jumbles",.8],["Odd sentence out",.6],["Paragraph completion",.6],["Timed RC practice and mixed VARC tests",1.2]]};
+const DS=["Arrangements and grouping","Tables, DI and caselets","Games, routes and Venn","Binary logic and quant-reasoning"];
+const SP={'2027-02-27':[['M',120,'F','Diagnostic mock (baseline only, ignore the score): note weak areas']],
+'2027-02-28':[['M',120,'A','Diagnostic analysis: list weak topics per section to prioritise in Phase 2']],
+'2027-06-12':[['Q',75,'X','Quant sectional test (syllabus complete) + review'],['D',60,'X','DILR sectional test (2 sets) + review']],
+'2027-06-13':[['V',60,'X','VARC sectional test + review'],['M',60,'A','Analyse all three sectionals; rank topics by weakness']],
+'2027-11-22':[['Q',45,'Z','Formula sheet + shortcuts revision (no new topics)']],
+'2027-11-23':[['V',45,'Z','Revise RC strategy notes + 2 light RCs']],
+'2027-11-24':[['D',45,'Z','Revise set-selection strategy; one easy set only']],
+'2027-11-25':[['Q',30,'Z','Skim error log; stop new practice']],
+'2027-11-26':[['R',30,'Z','Admit card, ID, centre route, sleep schedule']],
+'2027-11-27':[['R',20,'Z','Rest. Early sleep. Exam tomorrow.']]};
+const pd=s=>{const[a,b,c]=s.split('-');return new Date(+a,b-1,+c,12)};
+const fd=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const add=(s,n)=>{const d=pd(s);d.setDate(d.getDate()+n);return fd(d)},diff=(a,b)=>Math.round((pd(b)-pd(a))/864e5);
+const dl=s=>pd(s).toLocaleDateString('en-IN',{day:'numeric',month:'short'}),dlw=s=>pd(s).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const phase=d=>PH.findIndex(p=>d>=p[1]&&d<=p[2]),wsOf=s=>add(s,-((pd(s).getDay()+6)%7));
+const fmt=t=>{const h=Math.floor(t/60)%24,m=t%60;return(h%12||12)+(m?':'+String(m).padStart(2,'0'):'')+(h<12?' AM':' PM')};
+function tpl(d){const w=pd(d).getDay(),p=phase(d);
+ if(p<2)return({1:[['Q',60,'L']],2:[['V',60,'L']],3:[['Q',60,'L']],4:[['D',60,'L']],5:[['V',45,'L']],6:[['Q',90,'L'],['D',120,'L']],0:[['V',90,'L'],['Q',60,'R'],['R',30,'W']]})[w];
+ const m=p==2?75:p==3?90:75,wk=Math.floor(diff(PH[p][1],d)/7);
+ if(w==6)return p==2&&wk%2==0?[['X',210,'X']]:[['M',240,'F']];
+ if(w==0)return[['M',p==2?240:p==3?270:210,'A']];
+ if(p==3&&w==3)return[['X',75,'X']];
+ return[['QVDQV'[w-1],w==5?m-30:m,'P']]}
+const lab=(j,n)=>{const a=Math.ceil(n*.4);return j<a?'Lesson '+(j+1):j<n-2?'Practice set '+(j-a+1):j==n-2?'Revision + error log':'Topic test'};
+const P=[];(function(){const cnt={Q:0,D:0,V:0},queue={},last={};let qi=0,di=0,xi=0,mk=0,lt='mock';
+ for(let d=START;d<=END;d=add(d,1))if(phase(d)<2&&!SP[d])tpl(d).forEach(s=>s[2]=='L'&&cnt[s[0]]++);
+ for(const s in T){const tot=T[s].reduce((a,b)=>a+b[1],0);queue[s]=[];T[s].forEach((tp,i)=>{const n=Math.max(4,Math.floor(cnt[s]*tp[1]/tot));for(let j=0;j<n;j++)queue[s].push([s+i,tp[0],lab(j,n)])})}
+ for(let d=START;d<=END;d=add(d,1)){const wkd=[0,6].includes(pd(d).getDay());let t=wkd?600:1320;
+  (SP[d]||tpl(d)).forEach((x,i)=>{let[sec,m,k,title]=x,tp=null;
+   if(k=='L'){const q=queue[sec].shift();if(q){tp=q[0];title=q[1]+': '+q[2];last[sec]=q[1]}else title='Mixed practice: revisit weakest topics so far'}
+   else if(k=='R'&&!title)title='Spaced revision: re-solve wrong questions from '+(last.Q||'earlier topics');
+   else if(k=='W')title='Weekly review: update error log, 20-question mixed test, plan next week';
+   else if(k=='P')title=sec=='Q'?'PYQ + CAT-level questions: '+T.Q[qi++%16][0]+' (25 Qs, timed)':sec=='D'?'2 CAT-level sets, 20-25 min each: '+DS[di++%4]:'3 timed RCs (8 min each) + 5 VA questions';
+   else if(k=='F'&&!title){title='Full-length CAT mock #'+(++mk)+' (2 hrs, exam conditions) + first notes';lt='mock #'+mk}
+   else if(k=='X'&&!title){sec='QDV'[xi++%3];title=NM[sec]+' sectional test (timed) + mistake review';lt=NM[sec]+' sectional'}
+   else if(k=='A'&&!title)title='Analyse '+lt+': error log, time per question, skipped vs wrong; fix top 3 weak topics';
+   P.push({id:d+'-'+i,d,s:sec,m,t:title,k,tp,tm:fmt(t)+' - '+fmt(t+m)});t+=m+(wkd?30:0)})}})();
+const byTp={};P.forEach(t=>t.tp&&(byTp[t.tp]=byTp[t.tp]||[]).push(t));
+let S=(()=>{try{return Object.assign(DEF(),JSON.parse(localStorage[KEY]||'{}'))}catch(e){return DEF()}})();
+const save=()=>{try{localStorage[KEY]=JSON.stringify(S)}catch(e){}},done=t=>!!S.done[t.id];
+const pct=(a,b)=>b?Math.round(100*a/b):0,bar=p=>`<div class=bar><i style="width:${p}%"></i></div>`;
+const real=()=>fd(new Date()),tdy=()=>{const r=real();return r<START?START:r>END?END:r};
+const W0=wsOf(START),nW=Math.ceil((diff(W0,END)+1)/7);let tab='home',wk=Math.max(0,Math.floor(diff(W0,wsOf(tdy()))/7));
+const row=t=>`<label class="tk ${done(t)?'dn':''}"><input type=checkbox data-id="${t.id}" ${done(t)?'checked':''}><span class=dot style="background:var(--${t.s})"></span><span class=tt><b>${esc(t.t)}</b><small>${NM[t.s]} · ${t.m} min · ${t.tm}</small></span></label>`;
+function home(){const td=tdy(),A=P.filter(t=>t.d==td),ws=wsOf(td),W=P.filter(t=>t.d>=ws&&t.d<=add(ws,6)),wd=W.filter(done),ph=phase(td),ln=P.filter(t=>t.tp),od=P.filter(t=>t.d<td&&!done(t)),n=diff(real(),S.exam);
+ const hrs=a=>(a.reduce((s,t)=>s+t.m,0)/60).toFixed(1);
+ return`<h1>CAT 2027 · Target 99+</h1><div class=c><h2>Countdown (provisional ${dl(S.exam)} ${S.exam.slice(0,4)})</h2><div class=big>${n>=0?n:0}<span class=mu> days</span></div><div class=mu>${n>=0?Math.floor(n/7)+' weeks '+n%7+' days to go':'Exam date has passed'}</div></div>
+ <div class=g><div class=c><h2>This week</h2><div class=big style="font-size:32px">${pct(wd.length,W.length)}%</div>${bar(pct(wd.length,W.length))}<div class=mu>${wd.length}/${W.length} tasks · ${hrs(wd)}/${hrs(W)} h</div></div>
+ <div class=c><h2>Syllabus</h2><div class=big style="font-size:32px">${pct(ln.filter(done).length,ln.length)}%</div>${bar(pct(ln.filter(done).length,ln.length))}<div class=mu>${ln.filter(done).length}/${ln.length} lessons+practice</div></div></div>
+ <div class=c style="margin-top:12px"><h2>Phase ${ph+1} of 5</h2><b>${ph<0?'Not started':PH[ph][0]}</b><div class=mu>${ph<0?'':dl(PH[ph][1])+' - '+dl(PH[ph][2])}</div>${bar(pct(P.filter(done).length,P.length))}<div class=mu>Overall plan ${pct(P.filter(done).length,P.length)}% complete</div></div>
+ <div class=c><h2>Today · ${dlw(td)}</h2>${A.map(row).join('')}</div>
+ ${od.length?`<div class="c od"><h2>Overdue (${od.length})</h2>${od.slice(-6).map(t=>row(t).replace('<small>','<small>'+dl(t.d)+' · ')).join('')}<div class=mu>Catch up when you can; do not pile onto weekdays.</div></div>`:''}`}
+function plan(){const a=add(W0,wk*7),W=P.filter(t=>t.d>=a&&t.d<=add(a,6)),p=phase(add(a,3)),days=[...new Set(W.map(t=>t.d))];
+ return`<h1>Plan</h1><div class=c><div class=r><button class=s data-act=wk data-d=-1>◀</button><button class=s data-act=wk data-d=0 style="flex:2">This week</button><button class=s data-act=wk data-d=1>▶</button></div>
+ <h2 style="margin-top:12px">Week ${wk+1}/${nW} · ${dl(a)} - ${dl(add(a,6))}</h2><b>${p<0?'':'Phase '+(p+1)+': '+PH[p][0]}</b><div class=mu>${W.filter(done).length}/${W.length} done · ${(W.reduce((s,t)=>s+t.m,0)/60).toFixed(1)} h planned</div></div>
+ ${days.map(d=>`<div class=c><div class=dh style="margin-top:0">${dlw(d)}${d==real()?' · today':''}</div>${W.filter(t=>t.d==d).map(row).join('')}</div>`).join('')}
+ <div class=c><h2>Phases</h2>${PH.map((x,i)=>`<div class=tk><span class=tt><b>${i+1}. ${x[0]}</b><small>${dl(x[1])} ${x[1].slice(0,4)} - ${dl(x[2])} ${x[2].slice(0,4)}</small></span></div>`).join('')}</div>`}
+function syl(){return`<h1>Syllabus</h1>`+'QDV'.split('').map(s=>`<div class=c><h2 style="color:var(--${s})">${NM[s]}</h2>${T[s].map((tp,i)=>{const k=s+i,a=byTp[k]||[],dn=a.filter(done).length;
+ return`<div class=tk style="display:block"><b>${esc(tp[0])}</b>${bar(pct(dn,a.length))}<div class=r><span class=mu>${dn}/${a.length} · ${a.length?dl(a[0].d)+' - '+dl(a[a.length-1].d):''}</span><select data-conf="${k}" style="flex:0 0 120px">${[0,1,2,3,4,5].map(v=>`<option value=${v} ${(S.conf[k]||0)==v?'selected':''}>${v?'Confidence '+v+'/5':'Confidence -'}</option>`).join('')}</select></div></div>`}).join('')}</div>`).join('')}
+function tests(){const L=S.tests.map((t,i)=>({...t,i})).sort((a,b)=>a.d<b.d?1:-1),pts=[...L].reverse().map(t=>100*t.sc/t.mx),w=300;
+ const ch=pts.length>1?`<svg viewBox="0 0 ${w} 70" style="width:100%"><polyline fill=none stroke="var(--pr)" stroke-width=2 points="${pts.map((p,i)=>(i*w/(pts.length-1)).toFixed(0)+','+(66-p*.62).toFixed(0)).join(' ')}"/></svg><div class=mu>Score % over time</div>`:'';
+ return`<h1>Tests and mocks</h1><div class=c><h2>Log a test</h2><input type=date id=tdt value="${real()}"><select id=tty><option>Full mock</option><option>Sectional test</option><option>Topic test</option></select><input id=tnm placeholder="Name (e.g. Mock 1)"><div class=r><input id=tsc type=number step=any placeholder="Score"><input id=tmx type=number value=198 placeholder="Max"></div><textarea id=tnt rows=2 placeholder="Notes: weak areas, mistakes"></textarea><button class=p data-act=addt style="width:100%">Save test</button></div>
+ <div class=c>${ch||'<span class=mu>Log 2+ tests to see your trend.</span>'}</div><div class=c><h2>History</h2>${L.map(t=>`<div class=tk><span class=tt><b>${esc(t.n||t.ty)}</b><small>${dl(t.d)} · ${esc(t.ty)} · ${t.sc}/${t.mx} (${pct(t.sc,t.mx)}%)${t.nt?' · '+esc(t.nt):''}</small></span><button class=s data-act=delt data-i=${t.i}>✕</button></div>`).join('')||'<span class=mu>No tests logged yet.</span>'}</div>`}
+function more(){return`<h1>Settings and backup</h1><div class=c><h2>Exam date (provisional, editable)</h2><input type=date id=exd value="${S.exam}"><div class=mu>Changes the countdown only. The plan is built for a 28 Nov 2027 exam, so rebuild it if the official date differs a lot.</div></div>
+ <div class=c><h2>Backup</h2><div class=r><button class=p data-act=exp>Export file</button><button class=s data-act=copy>Copy</button></div><div class=r style="margin-top:8px"><button class=s data-act=imp>Import file</button><button class=s data-act=paste>Paste</button></div><div class=mu style="margin-top:8px">Export weekly. Data lives only on this device.</div></div>
+ <div class=c><h2>Danger zone</h2><button class=s data-act=reset style="width:100%;color:#dc2626">Reset all progress</button></div>`}
+function render(){const y=scrollY;document.getElementById('v').innerHTML=({home,plan,syl,tests,more})[tab]();
+ document.getElementById('n').innerHTML=[['home','🏠','Today'],['plan','📅','Plan'],['syl','📚','Syllabus'],['tests','📝','Tests'],['more','⚙️','More']].map(x=>`<button data-act=tab data-v=${x[0]} class="${tab==x[0]?'on':''}"><b>${x[1]}</b>${x[2]}</button>`).join('');scrollTo(0,y)}
+function imp(txt){try{const o=JSON.parse(txt);if(!o||typeof o.done!='object')throw 0;S=Object.assign(DEF(),o);save();render();alert('Backup restored')}catch(e){alert('That is not a valid backup')}}
+async function exp(){const n='cat27-backup-'+real()+'.json',f=new File([JSON.stringify(S,null,1)],n,{type:'application/json'});
+ try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return}}catch(e){if(e.name=='AbortError')return}
+ const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=n;a.click()}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act;
+ if(a=='tab'){tab=b.dataset.v;scrollTo(0,0);render();return}
+ if(a=='wk'){const d=+b.dataset.d;wk=d?Math.min(nW-1,Math.max(0,wk+d)):Math.max(0,Math.floor(diff(W0,wsOf(tdy()))/7));render()}
+ if(a=='addt'){const g=i=>document.getElementById(i).value,sc=parseFloat(g('tsc')),mx=parseFloat(g('tmx'));if(isNaN(sc)||!mx){alert('Enter score and max');return}
+  S.tests.push({d:g('tdt'),ty:g('tty'),n:g('tnm'),sc,mx,nt:g('tnt')});save();render()}
+ if(a=='delt'&&confirm('Delete this test?')){S.tests.splice(+b.dataset.i,1);save();render()}
+ if(a=='exp')exp();if(a=='imp')document.getElementById('f').click();
+ if(a=='copy')navigator.clipboard.writeText(JSON.stringify(S)).then(()=>alert('Backup copied'),()=>alert('Copy failed'));
+ if(a=='paste'){const t=prompt('Paste backup JSON');if(t)imp(t)}
+ if(a=='reset'&&confirm('Erase ALL progress and tests?')&&confirm('Really erase? Export a backup first if unsure.')){S=DEF();save();render()}});
+document.addEventListener('change',e=>{const t=e.target;
+ if(t.dataset.id){if(S.done[t.dataset.id])delete S.done[t.dataset.id];else S.done[t.dataset.id]=Date.now();save();render()}
+ else if(t.dataset.conf){S.conf[t.dataset.conf]=+t.value;save()}
+ else if(t.id=='exd'&&t.value){S.exam=t.value;save()}
+ else if(t.id=='f'&&t.files[0]){const r=new FileReader();r.onload=()=>imp(r.result);r.readAsText(t.files[0]);t.value=''}});
+render();try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js'));
+</script></body></html>
